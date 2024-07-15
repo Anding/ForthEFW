@@ -2,22 +2,22 @@
                                             
 LIBRARY: EFW_filter.dll  
 
-Extern: int "C" EFWCalibrate( int ID );
-Extern: int "C" EFWClose( int ID );
+Extern: int "C" EFWCalibrate( int WheelID );
+Extern: int "C" EFWClose( int WheelID );
 Extern: int "C" EFWGetDirection( int ID, int * bUnidirectional );
-Extern: int "C" EFWGetFirmwareVersion( int ID, unsigned char * major, unsigned char * minor, unsigned char * build );
-Extern: int "C" EFWGetHWErrorCode( int ID, int * pErrCode );
-Extern: int "C" EFWGetID( int index, int * ID );
+Extern: int "C" EFWGetFirmwareVersion( int WheelID, unsigned char * major, unsigned char * minor, unsigned char * build );
+Extern: int "C" EFWGetHWErrorCode( int WheelID, int * pErrCode );
+Extern: int "C" EFWGetID( int index, int * WheelID );
 Extern: int "C" EFWGetNum( );
-Extern: int "C" EFWGetPosition( int ID, int * pPosition );
+Extern: int "C" EFWGetPosition( int WheelID, int * pPosition );
 Extern: int "C" EFWGetProductIDs( int * pPIDs );
-Extern: int "C" EFWGetProperty( int ID, int * pInfo );
+Extern: int "C" EFWGetProperty( int WheelID, int * EFW_WHEEL_INFO );
 Extern: char * "C" EFWGetSDKVersion( );
-Extern: int "C" EFWGetSerialNumber( int ID, long * pSN );
-Extern: int "C" EFWOpen( int ID );
-Extern: int "C" EFWSetDirection( int ID, int bUnidirectional );
-Extern: int "C" EFWSetID( int ID, long alias );
-Extern: int "C" EFWSetPosition( int ID, int Position );
+Extern: int "C" EFWGetSerialNumber( int WheelID, long * EFWSN );
+Extern: int "C" EFWOpen( int WheelID );
+Extern: int "C" EFWSetDirection( int WheelID, int bUnidirectional );
+Extern: int "C" EFWSetID( int WheelID, long EFWID );
+Extern: int "C" EFWSetPosition( int WheelID, int Position );
 
 : EFW.Error ( n -- caddr u)
 \ return the EFW text error message
@@ -39,7 +39,7 @@ Extern: int "C" EFWSetPosition( int ID, int Position );
 BEGIN-STRUCTURE EFW_WHEEL_INFO
  4 +FIELD EFW_WHEEL_ID
 64 +FIELD EFW_WHEEL_NAME
- 4 +FIELD EFW_SLOT_NUMBER
+ 4 +FIELD EFW_SLOT_COUNT
 END-STRUCTURE
 
 BEGIN-STRUCTURE EFW_ID				\ 8 bytes
@@ -47,6 +47,7 @@ BEGIN-STRUCTURE EFW_ID				\ 8 bytes
 END-STRUCTURE
 
 \ pass by reference to ASI library functions
+variable EFWWheelID
 EFW_WHEEL_INFO		BUFFER: EFWWheelInfo
 EFW_ID				BUFFER: EFWID
 EFW_ID				BUFFER: EFWSN
