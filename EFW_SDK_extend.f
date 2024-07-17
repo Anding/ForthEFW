@@ -14,13 +14,6 @@
 	loop
 ;
 
-: EFW.get-model ( c-addr u -- c-addr u)
-\ extract the model of an EFW from the EFW_WHEEL_NAME field
-\ assume that the name is formatted "ZWO EFW[MODEL]"
-	4 - swap 4 + swap
-	2dup despace
-;
-
 : EFW.make-handle ( -- c-addr u)
 \ prepare a handle for the filter wheel based on name and serial number
 \ assumes ASIGetCameraProperty and ASIGetSerialNumber have been called
@@ -28,7 +21,7 @@
 	EFWSN @ 0 
 	<# # # # #  	\ last 4 digits only 
 	'_' HOLD			\ separator
-	EFWWheelInfo EFW_WHEEL_NAME zcount EFW.get-model HOLDS
+	EFWWheelInfo EFW_WHEEL_NAME zcount HOLDS
 	#> 
 	R> base !
 ;

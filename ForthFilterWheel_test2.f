@@ -26,12 +26,20 @@ scan-wheels
 
 what-wheel?
 
+." wheel position " wheel_position . CR
+
+: position-test
+	wheel_slots 0 do
+		." try position " i . tab
+		i ->wheel_position
+		2000 ms
+		." wheel position " wheel_position . CR
+	loop
+;
+
+position-test
+
 0 remove-wheel
-
-." wheel position " wheel_position . CR
-3 ->wheel_position 
-." wheel position " wheel_position . CR
-
 
 power-is-relay-switched [IF]
 \ Switch off the camera relay

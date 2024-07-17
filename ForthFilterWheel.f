@@ -33,16 +33,18 @@
 			i EFWWheelID ( index buffer) EFWGetID  EFW.?abort
 			EFWWheelID @										( ID)
 			dup .
+			dup EFWOpen EFW.?abort
 			dup EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
 			EFWWheelInfo EFW_WHEEL_NAME zcount tab type			
-			dup EFWOpen EFW.?ABORT
 			dup EFWSN EFWGetSerialNumber EFW.?ABORT 	( ID)
 			dup EFWClose EFW.?abort							( ID)
-			EFWSN @ tab u. 									\ last 8 hex digits only				
+			EFWSN @ tab tab u. 								\ last 8 hex digits only				
 			EFW.make-handle									( ID c-addr u)
 			2dup tab type CR									( ID c-addr u)
 			($constant)											( --)
 		loop
+	ELSE
+		CR ." No connected filter wheels" CR
 	THEN
 	R> base !
 ;
@@ -51,8 +53,9 @@
 \ make a wheel available for application use
 \ 	connect the wheel and calibrate it
 	dup EFWOpen EFW.?abort
-	dup EFWCalibrate EFW.?abort
-	dup EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
+	500 ms
+\	dup EFWCalibrate EFW.?abort
+	EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
 ;
 
 : remove-wheel ( WeelID --)
@@ -65,6 +68,11 @@
 	-> wheel.ID
 ;
 
+: wheel_slots ( -- n)
+\ count of filter apertures in the wheel
+	EFWWheelInfo EFW_SLOT_COUNT @ 
+;
+
 : what-wheel? ( --)
 \ report the current camera to the user
 \ WheelID Name SerialNo Slots
@@ -74,9 +82,9 @@
 	wheel.ID EFWSN EFWGetSerialNumber EFW.?ABORT 
 	EFWWheelInfo EFW_WHEEL_NAME zcount tab type
 	base @ hex									\ report the s/n in hex
-	EFWSN @ tab u.
+	EFWSN @ tab tab u.
 	base !
-	EFWWheelInfo EFW_SLOT_COUNT @ tab . CR
+	wheel_slots tab . CR
 ;
 
 : wheel_position { | pos } \ VFX locals for pass-by-reference
