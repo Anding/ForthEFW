@@ -26,7 +26,7 @@ scan-wheels
 
 what-wheel?
 
-." wheel position " wheel_position . CR
+." wheel position is " wheel_position . CR
 
 : position-test
 	wheel_slots 0 do
@@ -35,7 +35,7 @@ what-wheel?
 		begin
 			wheel_moving
 		while
-			." ." 100 ms 
+			." . " 100 ms
 		repeat
 		CR ." wheel position is " wheel_position .
 	loop
@@ -50,7 +50,7 @@ power-is-relay-switched [IF]
 
 	500 ms
 	1 relay-off
-	." Relay power off" CR
+	CR ." Relay power off" CR
 
 	remove-relays
 	

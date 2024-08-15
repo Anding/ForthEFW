@@ -91,9 +91,9 @@
 \ report whether the wheel is moving
 	wheel.ID ADDR pos EFWGetPosition ( -- errorno)
 	case
-		0 of 0 endof
+		0 of pos -1 = if -1 else 0 then endof			\ pos -1 also indicated moving UNDOCUMENTED
 		5 of -1 endof
-		EFW.?ABORT		\ no need to restore the selector for ENDCASE provided 0 is a case
+		EFW.?ABORT												\ no need to restore the selector for ENDCASE provided 0 is a case
 	ENDCASE
 ;
 
