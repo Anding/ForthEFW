@@ -30,10 +30,14 @@ what-wheel?
 
 : position-test
 	wheel_slots 0 do
-		." try position " i . tab
+		CR ." try position " i . tab
 		i ->wheel_position
-		2000 ms
-		." wheel position " wheel_position . CR
+		begin
+			wheel_moving
+		while
+			." ." 100 ms 
+		repeat
+		CR ." wheel position is " wheel_position .
 	loop
 ;
 

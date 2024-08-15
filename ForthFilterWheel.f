@@ -87,7 +87,17 @@
 	wheel_slots tab . CR
 ;
 
-: wheel_position { | pos } \ VFX locals for pass-by-reference
+: wheel_moving { | pos } ( -- bool) \ VFX locals for pass-by-reference 
+\ report whether the wheel is moving
+	wheel.ID ADDR pos EFWGetPosition ( -- errorno)
+	case
+		0 of 0 endof
+		5 of -1 endof
+		EFW.?ABORT		\ no need to restore the selector for ENDCASE provided 0 is a case
+	ENDCASE
+;
+
+: wheel_position { | pos } ( -- pos) \ VFX locals for pass-by-reference 
 	wheel.ID ADDR pos EFWGetPosition EFW.?abort
 	pos
 ;
