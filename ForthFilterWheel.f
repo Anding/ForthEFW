@@ -97,11 +97,25 @@
 	ENDCASE
 ;
 
+: wait-wheel ( --)
+\ synchronous hold until the wheel stops moving
+	CR
+	begin
+		wheel_moving
+	while
+		." . " 100 ms
+	repeat
+	CR
+;
+		
+
 : wheel_position { | pos } ( -- pos) \ VFX locals for pass-by-reference 
+	wait-wheel
 	wheel.ID ADDR pos EFWGetPosition EFW.?abort
 	pos
 ;
 
 : ->wheel_position ( pos --)
+	wait-wheel
 	wheel.ID swap EFWSetPosition EFW.?abort
 ; 

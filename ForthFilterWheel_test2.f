@@ -22,7 +22,6 @@ power-is-relay-switched [IF]
 scan-wheels
 0 add-wheel
 0 use-wheel
-500 ms
 
 what-wheel?
 
@@ -32,11 +31,6 @@ what-wheel?
 	wheel_slots 0 do
 		CR ." try position " i . tab
 		i ->wheel_position
-		begin
-			wheel_moving
-		while
-			." . " 100 ms
-		repeat
 		CR ." wheel position is " wheel_position .
 	loop
 ;
