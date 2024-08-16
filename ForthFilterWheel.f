@@ -99,13 +99,11 @@
 
 : wait-wheel ( --)
 \ synchronous hold until the wheel stops moving
-	CR
 	begin
 		wheel_moving
 	while
 		." . " 100 ms
 	repeat
-	CR
 ;
 		
 
@@ -119,3 +117,8 @@
 	wait-wheel
 	wheel.ID swap EFWSetPosition EFW.?abort
 ; 
+
+: calibrate-wheel
+	wait-wheel
+	wheel.ID EFWCalibrate EFW.?abort
+;

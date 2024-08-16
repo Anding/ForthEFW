@@ -37,6 +37,10 @@ what-wheel?
 
 position-test
 
+ CR ." calibrate wheel" calibrate-wheel CR
+ 
+ ." wheel position is " wheel_position . CR
+
 0 remove-wheel
 
 power-is-relay-switched [IF]
