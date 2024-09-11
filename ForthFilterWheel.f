@@ -31,22 +31,6 @@
 	R> base !
 ;
 
-: wheel_position { | pos } ( -- pos) \ VFX locals for pass-by-reference 
-	wait-wheel
-	wheel.ID ADDR pos EFWGetPosition EFW.?abort
-	pos
-;
-
-: ->wheel_position ( pos --)
-	wait-wheel
-	wheel.ID swap EFWSetPosition EFW.?abort
-; 
-
-: calibrate-wheel
-	wait-wheel
-	wheel.ID EFWCalibrate EFW.?abort
-;
-
 : wheel_moving { | pos } ( -- bool) \ VFX locals for pass-by-reference 
 \ report whether the wheel is moving
 	wheel.ID ADDR pos EFWGetPosition ( -- errorno)
@@ -66,7 +50,28 @@
 	repeat
 ;
 
-: add-wheel ( WheelD --)
+: wheel_position { | pos } ( -- pos) \ VFX locals for pass-by-reference 
+	wait-wheel
+	wheel.ID ADDR pos EFWGetPosition EFW.?abort
+	pos
+;
+
+: ->wheel_position ( pos --)
+	wait-wheel
+	wheel.ID swap EFWSetPosition EFW.?abort
+; 
+
+: calibrate-wheel
+	wait-wheel
+	wheel.ID EFWCalibrate EFW.?abort
+;
+
+: wheel_slots ( -- n)
+\ count of filter apertures in the wheel
+	EFWWheelInfo EFW_SLOT_COUNT @ 
+;
+
+: add-wheel ( WheelID --)
 \ make a wheel available for application use
 \ 	connect the wheel and calibrate it
 	dup EFWOpen EFW.?abort
@@ -74,26 +79,25 @@
 	EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
 ;
 
-: use-wheel ( CameraID --)
-\ choose the camera to be selected for operations
+: use-wheel ( WheelID --)
+\ choose the wheel to be selected for operations - must be added first
 	dup -> wheel.ID
 	dup EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
 	dup EFWSN EFWGetSerialNumber EFW.?ABORT 
 ;
 
-: remove-wheel ( WeelID --)
+: remove-wheel ( WheelID --)
 \ disconnect the wheel, it becomes unavailable to the application
 	EFWClose EFW.?abort
 ;
 
 : scan-wheels ( -- )
-\ scan the plugged-in cameras
-\ create a CONSTANT (out of the name and S/N) for each CameraID
-\ report the cameras and 
+\ scan the plugged-in filter wheels
+\ create a CONSTANT (out of the name and S/N) for each WheelID
 	EFWGetNum ( -- n)
 	?dup
 	IF
-		\ loop over each connected camera
+		\ loop over each connected wheel
 		CR ." ID" tab ." Wheel" tab tab ." S/N" tab tab ." Handle" CR
 		0 do
 			i EFWWheelID ( index buffer) EFWGetID  EFW.?abort
@@ -112,15 +116,10 @@
 	THEN
 ;
 
-: wheel_slots ( -- n)
-\ count of filter apertures in the wheel
-	EFWWheelInfo EFW_SLOT_COUNT @ 
-;
-
 \ convenience functions
 
 : what-wheel? ( --)
-\ report the current camera to the user
+\ report the current filter wheel to the user
 \ WheelID Name SerialNo Slots
 	CR ." ID" 		wheel.ID tab tab .	
 	CR ." Name" 	wheel_SN tab tab type

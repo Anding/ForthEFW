@@ -16,7 +16,7 @@
 
 : EFW.make-handle ( -- c-addr u)
 \ prepare a handle for the filter wheel based on name and serial number
-\ assumes EFWGetCameraProperty and EFWGetSerialNumber have been called
+\ assumes EFWGetProperty and EFWGetSerialNumber have been called
 	base @ >R hex	\ s/n in hexadecimal
 	EFWSN @ 0 
 	<# # # # #  	\ last 4 digits only 
@@ -27,4 +27,4 @@
 ;
  
 0 value wheel.ID 
-\ the EFW WheelID of the presently selected camera
+\ the EFW WheelID of the presently selected filter wheel
