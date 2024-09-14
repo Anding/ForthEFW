@@ -49,7 +49,6 @@ END-STRUCTURE
 \ pass by reference to ASI library functions
 variable EFWWheelID
 EFW_WHEEL_INFO		BUFFER: EFWWheelInfo
-EFW_ID				BUFFER: EFWID
 EFW_ID				BUFFER: EFWSN
 
 \ do-or-die error handler
