@@ -6,8 +6,8 @@ include "%idir%\EFW_SDK.f"
 include "%idir%\EFW_SDK_extend.f"
 include "%idir%\ForthFilterWheel.f"
 include "%idir%\..\ForthBase\serial\VFX32serial.f"
-include "%idir%\..\KMTronic\KMTronic_Bidmead.f"
-include "%idir%\..\KMTronic\KMTronic.f"
+include "%idir%\..\ForthKMTronic\KMTronic_Bidmead.f"
+include "%idir%\..\ForthKMTronic\KMTronic.f"
 include "%idir%\..\forth-map\map.fs"
 include "%idir%\..\forth-map\map-tools.fs"
 include "%idir%\ForthFilterWheelMaps.f"
@@ -18,7 +18,7 @@ CR
 power-is-relay-switched [IF] 
 \ Switch on the camera relay
 
-	COM-KMT add-relays
+	COM_KMT add-relays
 	1 relay-on
 	3000 ms
 	." Relay power on" CR

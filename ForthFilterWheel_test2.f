@@ -5,6 +5,8 @@ include "%idir%\..\ForthBase\ForthBase.f"
 include "%idir%\EFW_SDK.f"
 include "%idir%\EFW_SDK_extend.f"
 include "%idir%\ForthFilterWheel.f"
+include "%idir%\..\ForthBase\serial\VFX32serial.f"
+include "%idir%\..\ForthKMTronic\KMTronic_Bidmead.f"
 include "%idir%\..\ForthKMTronic\KMTronic.f"
 
 -1 constant power-is-relay-switched
@@ -38,9 +40,9 @@ what-wheel?
 
 position-test
 
- CR ." calibrate wheel" calibrate-wheel CR
+\ CR ." calibrate wheel" calibrate-wheel CR
  
- ." wheel position is " wheel_position . CR
+\ ." wheel position is " wheel_position . CR
 
 0 remove-wheel
 

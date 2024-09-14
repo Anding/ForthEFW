@@ -82,9 +82,9 @@
 
 : use-wheel ( WheelID --)
 \ choose the wheel to be selected for operations - must be added first
-	dup -> wheel.ID
-	dup EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
-	dup EFWSN EFWGetSerialNumber EFW.?ABORT 
+	-> wheel.ID
+	wheel.ID EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
+	wheel.ID EFWSN EFWGetSerialNumber EFW.?ABORT 
 ;
 
 : remove-wheel ( WheelID --)
@@ -99,18 +99,18 @@
 	?dup
 	IF
 		\ loop over each connected wheel
-		CR ." ID" tab ." Wheel" tab tab ." S/N" tab tab ." Handle" CR
+		CR ." ID" tab  ." Handle" tab ." Wheel" CR
 		0 do
 			i EFWWheelID ( index buffer) EFWGetID  EFW.?abort
 			EFWWheelID @										( ID)
-			dup . -> wheel.ID
+			dup -> wheel.ID .
 			wheel.ID EFWOpen EFW.?abort
-			wheel.ID EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
-			wheel_name tab type wheel_SN tab type		
-			wheel.ID EFWClose EFW.?abort		
-			wheel.ID EFW.make-handle						( ID c-addr u)
-			2dup tab type CR									( ID c-addr u)
-			($constant)											( --)
+			wheel.ID EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?ABORT
+			wheel.ID EFWSN EFWGetSerialNumber EFW.?ABORT 
+			wheel.ID EFW.make-handle 2dup tab type 	( ID c-addr u)			
+			($constant)											( --)			
+			wheel_name tab type CR	
+			wheel.ID EFWClose EFW.?ABORT	
 		loop
 	ELSE
 		CR ." No connected filter wheels" CR
@@ -123,8 +123,9 @@
 \ report the current filter wheel to the user
 \ WheelID Name SerialNo Slots
 	CR ." ID" 		wheel.ID tab tab .	
-	CR ." Name" 	wheel_SN tab tab type
-	CR ." Slots"	wheel_slots tab . CR
+	CR ." Name" 	wheel_name tab tab type
+	CR ." S/N"		wheel_SN tab tab type
+	CR ." Slots"	wheel_slots tab tab . CR
 	CR CR
 ;
 

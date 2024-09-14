@@ -55,8 +55,8 @@ end-enum
 : add-wheelFITS ( map --)
 \ add key value pairs for FITS wheel parameters
 	>R
-	s" FILTER" wheel_position FITSfilterBand 		R@ =>" FILTER"
-	s" FILTERSP" wheel_position FITSfilterSpec 	R@ =>" FILTERSP"	
+	wheel_position FITSfilterBand 	R@ =>" FILTER"
+	wheel_position FITSfilterSpec 	R@ =>" FILTERSP"	
 	wheel_name				R@ =>" WHEEL"
 	wheel_position (.) 	R@ =>" WHEELPOS"
 	wheel_SN					R@ =>" WHEELSN"
