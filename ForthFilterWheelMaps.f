@@ -5,7 +5,7 @@
 \ requires EFW_SDK.f
 \ requires EFW_SDK_extend.f
 \ requires maps.fs
-\ requires map-tools.fs
+\ requires forthbase.f, map-tools.fs
 
 \ FITS keywords supported by MaxImDL
 \ ==================================
@@ -18,44 +18,14 @@
 \ WHEELSN 	- wheel serial number
 \ FILTERSP	- filter specification
 
-begin-enum
-	+enum LUM
-	+enum RED
-	+enum GREEN
-	+enum BLUE
-	+enum H_alpha
-	+enum SII
-	+enum OIII
-end-enum
+DEFER FITSfilterBand ( n -- caddr u)
 
-: FITSfilterBand ( n -- caddr u)
-	case
-	LUM 		of s" Luminescence" endof
-	RED 		of s" RED" endof
-	GREEN 	of s" GREEN" endof
-	BLUE 		of s" BLUE" endof
-	SII 		of s" H_alpha" endof
-	H_alpha 	of s" SII" endof
-	OIII 		of s" OIII" endof
-	." " rot endcase
-;
-
-: FITSfilterSpec ( n -- caddr u)
-	case
-	LUM 		of s" Astronomik Deep Sky II" endof
-	RED 		of s" Astronomik Deep Sky II" endof
-	GREEN 	of s" Astronomik Deep Sky II" endof
-	BLUE 		of s" Astronomik Deep Sky II" endof
-	SII 		of s" Astronomik 3nm" endof
-	H_alpha 	of s" Astronomik 3nm" endof
-	OIII 		of s" Astronomik 3nm" endof
-	." " rot endcase
-;
+DEFER FITSfilterSpec ( n -- caddr u)
 
 : add-wheelFITS ( map --)
 \ add key value pairs for FITS wheel parameters
 	>R
-	s"  " 					R@ =>" #FILTERWH"		\ a header to indicate the source of these FITS values
+	s"  " 					R@ =>" #FILTERWH"						\ a header to indicate the source of these FITS values
 	wheel_position FITSfilterBand 	R@ =>" FILTER"
 	wheel_position FITSfilterSpec 	R@ =>" FILTERSP"	
 	wheel_name				R@ =>" WHEEL"
@@ -64,5 +34,26 @@ end-enum
 	R> drop
 ;	
 
-	
+BEGIN-ENUMS default_FITSfilterBand
+	+" LUM"
+	+" RED"
+	+" GREEN"
+	+" BLUE"
+	+" H-ALPHA"
+	+" SII"
+	+" OIII"
+END-ENUMS
 
+ASSIGN default_FITSfilterBand TO-DO FITSfilterBand
+	
+BEGIN-ENUMS default_FITSfilterSpec
+	+" Astronomik UV-IR-BLOCK L-2"
+	+" Astronomik Deep-Sky RGB"
+	+" Astronomik Deep-Sky RGB"
+	+" Astronomik Deep-Sky RGB"
+	+" Astronomik MaxFR 6nm"
+	+" Astronomik MaxFR 6nm"
+	+" Astronomik MaxFR 6nm"
+END-ENUMS
+
+ASSIGN default_FITSfilterBand TO-DO FITSfilterSpec
