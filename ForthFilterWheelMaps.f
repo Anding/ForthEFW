@@ -28,8 +28,8 @@ DEFER FITSfilterSpec ( n -- caddr u)
 	s"  " 					R@ =>" #FILTERWH"						\ a header to indicate the source of these FITS values
 	wheel_position FITSfilterBand 	R@ =>" FILTER"
 	wheel_position FITSfilterSpec 	R@ =>" FILTERSP"	
+	wheel_position (.) 	R@ =>" WHEELPOS"	
 	wheel_name				R@ =>" WHEEL"
-	wheel_position (.) 	R@ =>" WHEELPOS"
 	wheel_SN					R@ =>" WHEELSN"
 	R> drop
 ;	
@@ -56,4 +56,4 @@ BEGIN-ENUMS default_FITSfilterSpec
 	+" Astronomik MaxFR 6nm"
 END-ENUMS
 
-ASSIGN default_FITSfilterBand TO-DO FITSfilterSpec
+ASSIGN default_FITSfilterSpec TO-DO FITSfilterSpec
