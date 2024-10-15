@@ -1,7 +1,9 @@
 \ test for EFW_SDK.f
 
-include C:\MPE\VfxForth\Lib\Win32\Genio\SocketIo.fth
-include "%idir%\..\ForthBase\ForthBase.f"
+include "%idir%\..\ForthBase\libraries\libraries.f"
+NEED forthbase
+NEED network
+
 include "%idir%\EFW_SDK.f"
 include "%idir%\EFW_SDK_extend.f"
 include "%idir%\ForthFilterWheel.f"
