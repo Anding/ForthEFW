@@ -1,4 +1,5 @@
 \ Forth words directly corresponding to the EFW SDK
+need ForthBase
                                             
 LIBRARY: EFW_filter.dll  
 

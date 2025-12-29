@@ -34,15 +34,15 @@ DEFER FITSfilterSpec ( n -- caddr u)
 	R> drop
 ;	
 
-BEGIN-ENUM
-	+ENUM LUM
-	+ENUM RED
-	+ENUM GREEN
-	+ENUM BLUE
-	+ENUM H-ALPHA
-	+ENUM SII
-	+ENUM OIII
-END-ENUM
+\ BEGIN-ENUM
+\ 	+ENUM LUM
+\ 	+ENUM RED
+\ 	+ENUM GREEN
+\ 	+ENUM BLUE
+\ 	+ENUM H-ALPHA
+\ 	+ENUM SII
+\ 	+ENUM OIII
+\ END-ENUM
 
 BEGIN-ENUMS default_FITSfilterBand
 	+" LUM"

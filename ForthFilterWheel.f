@@ -27,7 +27,7 @@
 : wheel_SN   ( -- caddr u)
 \ return the S/N of the wheel as a hex string
 	base @ >R hex
-	EFWSN dup @(n) swap 4 + @(n) swap		\ S/N is stored in big-endian format
+	EFWSN dup @ ( n) swap 4 + @ ( n) swap	\ S/N is stored in big-endian format
 	<# # # # # # # # # # # # # # # # # #> 	\ VFX has no word (ud.)
 	R> base !
 ;
