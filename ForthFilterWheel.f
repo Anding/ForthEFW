@@ -47,7 +47,7 @@
 	begin
 		wheel_moving
 	while
-		." . " 100 ms
+		100 ms
 	repeat
 ;
 
@@ -99,7 +99,7 @@
 	?dup
 	IF
 		\ loop over each connected wheel
-		CR ." ID" tab  ." Handle" tab ." Wheel" CR
+		CR ." ID" tab  ." Handle" tab tab ." Wheel" CR
 		0 do
 			i EFWWheelID ( index buffer) EFWGetID  EFW.?abort
 			EFWWheelID @										( ID)
@@ -119,14 +119,13 @@
 
 \ convenience functions
 
-: what-wheel? ( --)
+: check-wheel ( --)
 \ report the current filter wheel to the user
 \ WheelID Name SerialNo Slots
-	CR ." ID" 		wheel.ID tab tab .	
-	CR ." Name" 	wheel_name tab tab type
-	CR ." S/N"		wheel_SN tab tab type
-	CR ." Slots"	wheel_slots tab tab . CR
-	CR CR
+	wheel.ID EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
+	CR 
+	." Filter wheel ID = " wheel.ID .	
+	." ; Name = " wheel_name type
 ;
 
 
