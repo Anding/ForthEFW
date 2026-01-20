@@ -117,7 +117,45 @@
 	THEN
 ;
 
-\ convenience functions
+\ user lexicon
+
+DEFER filterBand ( n -- caddr u)
+DEFER filterSpec ( n -- caddr u)
+
+BEGIN-ENUMS default_filterBand
+( n -- caddr u)
+	+" LUM"
+	+" RED"
+	+" GREEN"
+	+" BLUE"
+	+" H-ALPHA"
+	+" SII"
+	+" OIII"
+END-ENUMS
+
+ASSIGN default_filterBand TO-DO filterBand
+	
+BEGIN-ENUMS default_filterSpec
+( n -- caddr u)
+	+" Astronomik UV-IR-BLOCK L-2"
+	+" Astronomik Deep-Sky RGB"
+	+" Astronomik Deep-Sky RGB"
+	+" Astronomik Deep-Sky RGB"
+	+" Astronomik MaxFR 6nm"
+	+" Astronomik MaxFR 6nm"
+	+" Astronomik MaxFR 6nm"
+END-ENUMS
+
+ASSIGN default_filterSpec TO-DO filterSpec
+
+: filter ( pos --)
+	->wheel_position
+	wait-wheel
+;
+
+: filter? ( --)
+	wheel_position filterBand cr type cr
+;
 
 : check-wheel ( --)
 \ report the current filter wheel to the user
