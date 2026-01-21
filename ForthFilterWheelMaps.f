@@ -22,8 +22,8 @@
 \ add key value pairs for FITS wheel parameters
 	>R
 	s"  "                           R@ =>" #FILTERWH"						\ a header to indicate the source of these FITS values
-	wheel_position FITSfilterBand   R@ =>" FILTER"
-	wheel_position FITSfilterSpec   R@ =>" FILTERSP"	
+	wheel_position filterBand       R@ =>" FILTER"
+	wheel_position filterSpec       R@ =>" FILTERSP"	
 	wheel_position (.)              R@ =>" WHEELPOS"	
 	wheel_name                      R@ =>" WHEEL"
 	wheel_SN                        R@ =>" WHEELSN"
