@@ -84,7 +84,7 @@
 \ choose the wheel to be selected for operations - must be added first
 	-> wheel.ID
 	wheel.ID EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
-	wheel.ID EFWSN EFWGetSerialNumber EFW.?ABORT 
+	wheel.ID EFWSN EFWGetSerialNumber drop 
 ;
 
 : remove-wheel ( WheelID --)
@@ -106,7 +106,7 @@
 			dup -> wheel.ID .
 			wheel.ID EFWOpen EFW.?abort
 			wheel.ID EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?ABORT
-			wheel.ID EFWSN EFWGetSerialNumber EFW.?ABORT 
+			wheel.ID EFWSN EFWGetSerialNumber drop 
 			wheel.ID EFW.make-handle 2dup tab type 	( ID c-addr u)			
 			($constant)											( --)			
 			wheel_name tab type CR	
