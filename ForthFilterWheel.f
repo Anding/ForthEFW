@@ -19,6 +19,8 @@
 \ 	values over variables
 \ 	actions to the presently-selected-camera
 
+s" " $value efw.str1
+
 : wheel_name ( -- caddr u)
 \ return the name of the camera
 	EFWWheelInfo EFW_WHEEL_NAME zcount
@@ -38,17 +40,16 @@
 	case
 		0 of pos -1 = if -1 else 0 then endof			\ pos -1 also indicated moving UNDOCUMENTED
 		5 of -1 endof
-		EFW.?ABORT												\ no need to restore the selector for ENDCASE provided 0 is a case
-	ENDCASE
+		0 swap                                          \ restore the selector
+	endcase
 ;
 
 : wait-wheel ( --)
 \ synchronous hold until the wheel stops moving
 	begin
-		wheel_moving
-	while
-		100 ms
-	repeat
+	    100 ms
+		wheel_moving 0=
+	until
 ;
 
 : wheel_position { | pos } ( -- pos) \ VFX locals for pass-by-reference 
@@ -75,6 +76,7 @@
 : add-wheel ( WheelID --)
 \ make a wheel available for application use
 \ 	connect the wheel and calibrate it
+    EFWGetNum 0= if s" no connected filter wheels" cr .>E cr abort then
 	dup EFWOpen EFW.?abort
 	500 ms
 	EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
@@ -85,11 +87,15 @@
 	-> wheel.ID
 	wheel.ID EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
 	wheel.ID EFWSN EFWGetSerialNumber drop 
+	wheel_name $-> efw.str1 s"  at slot " $+> efw.str1
+	wheel_position (.) $+> efw.str1
+	cr efw.str1 .> cr
 ;
 
 : remove-wheel ( WheelID --)
 \ disconnect the wheel, it becomes unavailable to the application
-	EFWClose EFW.?abort
+    wait-wheel
+	EFWClose drop
 ;
 
 : scan-wheels ( -- )
@@ -138,12 +144,12 @@ ASSIGN default_filterBand TO-DO filterBand
 BEGIN-ENUMS default_filterSpec
 ( n -- caddr u)
 	+" Astronomik UV-IR-BLOCK L-2"
-	+" Astronomik Deep-Sky RGB"
-	+" Astronomik Deep-Sky RGB"
-	+" Astronomik Deep-Sky RGB"
-	+" Astronomik MaxFR 6nm"
-	+" Astronomik MaxFR 6nm"
-	+" Astronomik MaxFR 6nm"
+	+" Astronomik Deep-Sky Red"
+	+" Astronomik Deep-Sky Green"
+	+" Astronomik Deep-Sky Blue"
+	+" Astronomik MaxFR 6nm H-alpha"
+	+" Astronomik MaxFR 6nm SII"
+	+" Astronomik MaxFR 6nm OIII"
 END-ENUMS
 
 ASSIGN default_filterSpec TO-DO filterSpec
@@ -151,6 +157,7 @@ ASSIGN default_filterSpec TO-DO filterSpec
 : filter ( pos --)
 	->wheel_position
 	wait-wheel
+	wheel_position filterSpec cr .> cr
 ;
 
 : filter? ( --)

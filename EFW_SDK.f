@@ -1,5 +1,6 @@
 \ Forth words directly corresponding to the EFW SDK
-need ForthBase
+need ForthBase 
+need ForthVT100
                                             
 LIBRARY: EFW_filter.dll  
 
@@ -20,22 +21,19 @@ Extern: int "C" EFWSetDirection( int WheelID, int bUnidirectional );
 Extern: int "C" EFWSetID( int WheelID, long EFWID );
 Extern: int "C" EFWSetPosition( int WheelID, int Position );
 
-: EFW.Error ( n -- caddr u)
+BEGIN-ENUMS EFW.Error ( n -- caddr u)
 \ return the EFW text error message
-	CASE
-	 0 OF s" SUCCESS" ENDOF
-	 1 OF s" INVALID_INDEX" ENDOF
-	 2 OF s" INVALID_ID" ENDOF
-	 3 OF s" INVALID_VALUE" ENDOF
-	 4 OF s" REMOVED" ENDOF	
-	 5 OF s" MOVING" ENDOF	
-	 6 OF s" ERROR_STATE" ENDOF
-	 7 OF s" GENERAL_ERROR" ENDOF
-	 8 OF s" NOT_SUPPORTED" ENDOF
-	 9 OF s" CLOSED" ENDOF
-	s" OTHER_ERROR" rot 							( caddr u n)  \ ENDCASE consumes the case selector
-	ENDCASE 
-;
+	 +" FILTER WHEEL SUCCESS" 
+	 +" FILTER WHEEL INVALID_INDEX" 
+	 +" FILTER WHEEL INVALID_ID" 
+	 +" FILTER WHEEL INVALID_VALUE" 
+	 +" FILTER WHEEL REMOVED" 	
+	 +" FILTER WHEEL MOVING" 	
+	 +" FILTER WHEEL ERROR_STATE" 
+	 +" FILTER WHEEL GENERAL_ERROR" 
+	 +" FILTER WHEEL NOT_SUPPORTED" 
+	 +" FILTER WHEEL CLOSED" 
+END-ENUMS
 
 BEGIN-STRUCTURE EFW_WHEEL_INFO
  4 +FIELD EFW_WHEEL_ID
@@ -57,7 +55,7 @@ EFW_ID				BUFFER: EFWSN
 	flushKeys	
 	dup 
 	IF 
-		EFW.Error type CR
+		EFW.Error cr .>E cr
 		abort 
 	ELSE
 		drop	
