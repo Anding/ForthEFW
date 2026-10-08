@@ -52,10 +52,9 @@ EFW_ID				BUFFER: EFWSN
 
 \ do-or-die error handler
 : EFW.?abort ( n --)
-	flushKeys	
 	dup 
 	IF 
-		EFW.Error cr .>E cr
+		EFW.Error .E>
 		abort 
 	ELSE
 		drop	

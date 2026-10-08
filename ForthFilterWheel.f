@@ -76,7 +76,7 @@ s" " $value efw.str1
 : add-wheel ( WheelID --)
 \ make a wheel available for application use
 \ 	connect the wheel and calibrate it
-    EFWGetNum 0= if s" no connected filter wheels" cr .>E cr abort then
+    EFWGetNum 0= if s" no connected filter wheels" .E> abort then
 	dup EFWOpen EFW.?abort
 	500 ms
 	EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
@@ -89,7 +89,7 @@ s" " $value efw.str1
 	wheel.ID EFWSN EFWGetSerialNumber drop 
 	wheel_name $-> efw.str1 s"  at slot " $+> efw.str1
 	wheel_position (.) $+> efw.str1
-	cr efw.str1 .> cr
+	efw.str1 .>
 ;
 
 : remove-wheel ( WheelID --)
@@ -157,7 +157,7 @@ ASSIGN default_filterSpec TO-DO filterSpec
 : filter ( pos --)
 	->wheel_position
 	wait-wheel
-	wheel_position filterSpec cr .> cr
+	wheel_position filterSpec .>
 ;
 
 : filter? ( --)
@@ -167,13 +167,13 @@ ASSIGN default_filterSpec TO-DO filterSpec
 : check-wheel ( --)
 \ report the current filter wheel state to the user
 	wheel.ID EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
-	CR 
-	." Filter wheel ID = " wheel.ID .	
-	." ; Name = " wheel_name type
-	." ; Position = " wheel_position .
-	." ; Moving = " wheel_moving .
+	s" Filter wheel" panel{
+	s" ID" wheel.ID (.) .field
+	s" Name" wheel_name .field
+	s" Position" wheel_position (.) .field
+	s" Moving" wheel_moving (.) .field
+	}panel
 ;
 
 
 		
-
