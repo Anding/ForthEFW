@@ -7,13 +7,6 @@
 \ Operational notes
 \ 	variables over values
 
-: despace ( c-addr u --)
-\ convert spaces to underscore characters
-	over + swap do
-		i c@ BL = if '_' i c! then	
-	loop
-;
-
 : EFW.make-handle ( -- c-addr u)
 \ prepare a handle for the filter wheel based on name and serial number
 \ assumes EFWGetProperty and EFWGetSerialNumber have been called
