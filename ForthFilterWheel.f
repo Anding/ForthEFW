@@ -165,15 +165,15 @@ ASSIGN default_filterSpec TO-DO filterSpec
 ;
 
 : check-wheel ( --)
-\ report the current filter wheel to the user
-\ WheelID Name SerialNo Slots
+\ report the current filter wheel state to the user
 	wheel.ID EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
 	CR 
 	." Filter wheel ID = " wheel.ID .	
 	." ; Name = " wheel_name type
+	." ; Position = " wheel_position .
+	." ; Moving = " wheel_moving .
 ;
 
 
 		
-
 
