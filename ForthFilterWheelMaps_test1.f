@@ -5,7 +5,7 @@ NEED forthbase
 NEED network
 NEED serial
 NEED ForthKMTronic
-NEED forth-map
+NEED ordered-maps
 
 include "%idir%\EFW_SDK.f"
 include "%idir%\EFW_SDK_extend.f"
@@ -29,8 +29,7 @@ scan-wheels
 0 use-wheel
 500 ms
 
-	map-strings
-	map CONSTANT wheel_FITSmap
+	allocate-map CONSTANT wheel_FITSmap
 	wheel_FITSmap add-wheelFITS
 	wheel_FITSmap .map
 

@@ -4,8 +4,7 @@
 \ requires forthbase.f
 \ requires EFW_SDK.f
 \ requires EFW_SDK_extend.f
-\ requires maps.fs
-\ requires forthbase.f, map-tools.fs
+NEED ordered-maps
 
 \ FITS keywords supported by MaxImDL
 \ ==================================
@@ -29,6 +28,5 @@
 \   wheel_SN                        R@ =>" WHEELSN"
 	R> drop
 ;	
-
 
 
