@@ -49,14 +49,10 @@ END-STRUCTURE
 variable EFWWheelID
 EFW_WHEEL_INFO		BUFFER: EFWWheelInfo
 EFW_ID				BUFFER: EFWSN
+EFWWheelInfo EFW_WHEEL_INFO erase
+EFWSN EFW_ID erase
 
-\ do-or-die error handler
+\ Report SDK errors; keep the public name for existing callers.
 : EFW.?abort ( n --)
-	dup 
-	IF 
-		EFW.Error .E>
-		abort 
-	ELSE
-		drop	
-	THEN
+	?dup if EFW.Error cr type cr then
 ;

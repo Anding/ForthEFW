@@ -1,6 +1,6 @@
 \ Forth lexicon for controlling a filter wheel
 \ 	ZWO EFW version
-\ 	interactive version - errors will report and abort
+\ 	ordinary errors report and return to the caller
 
 \ requires EFW_SDK.f
 \ requires EFW_SDK_extend.f
@@ -34,37 +34,46 @@ s" " $value efw.str1
 	R> base !
 ;
 
-: wheel_moving { | pos } ( -- bool) \ VFX locals for pass-by-reference 
+: wheel-motion? { | pos -- moving? valid? }
 \ report whether the wheel is moving
-	wheel.ID ADDR pos EFWGetPosition ( -- errorno)
-	case
-		0 of pos -1 = if -1 else 0 then endof			\ pos -1 also indicated moving UNDOCUMENTED
-		5 of -1 endof
-		0 swap                                          \ restore the selector
-	endcase
+	0 -> pos
+	wheel.ID ADDR pos EFWGetPosition
+	dup 5 = if drop -1 -1 exit then
+	?dup if EFW.?abort 0 0 exit then
+	pos -1 = -1 \ An SDK position of -1 also means moving.
 ;
 
-: wait-wheel ( --)
+: wheel_moving ( -- bool )
+	wheel-motion? drop
+;
+
+: (wait-wheel) ( -- ready? )
 \ synchronous hold until the wheel stops moving
 	begin
 	    100 ms
-		wheel_moving 0=
-	until
+		wheel-motion? 0= if drop 0 exit then
+	0= until
+	-1
+;
+
+: wait-wheel ( --)
+	(wait-wheel) drop
 ;
 
 : wheel_position { | pos } ( -- pos) \ VFX locals for pass-by-reference 
-	wait-wheel
-	wheel.ID ADDR pos EFWGetPosition EFW.?abort
+	0 -> pos
+	(wait-wheel) 0= if 0 exit then
+	wheel.ID ADDR pos EFWGetPosition ?dup if EFW.?abort 0 exit then
 	pos
 ;
 
 : ->wheel_position ( pos --)
-	wait-wheel
+	(wait-wheel) 0= if drop exit then
 	wheel.ID swap EFWSetPosition EFW.?abort
 ; 
 
 : calibrate-wheel
-	wait-wheel
+	(wait-wheel) 0= if exit then
 	wheel.ID EFWCalibrate EFW.?abort
 ;
 
@@ -75,18 +84,21 @@ s" " $value efw.str1
 
 : add-wheel ( WheelID --)
 \ make a wheel available for application use
-\ 	connect the wheel and calibrate it
-    EFWGetNum 0= if s" no connected filter wheels" .E> abort then
-	dup EFWOpen EFW.?abort
+\ 	connect the wheel and read its properties
+    EFWGetNum 0= if drop s" no connected filter wheels" .E> exit then
+	dup EFWOpen ?dup if EFW.?abort drop exit then
 	500 ms
-	EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
+	dup EFWWheelInfo EFWGetProperty ?dup if
+		EFW.?abort EFWClose EFW.?abort exit
+	then
+	drop
 ;
 
 : use-wheel ( WheelID --)
 \ choose the wheel to be selected for operations - must be added first
 	-> wheel.ID
-	wheel.ID EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
-	wheel.ID EFWSN EFWGetSerialNumber drop 
+	wheel.ID EFWWheelInfo EFWGetProperty ?dup if EFW.?abort exit then
+	wheel.ID EFWSN EFWGetSerialNumber ?dup if EFW.?abort exit then
 	wheel_name $-> efw.str1 s"  at slot " $+> efw.str1
 	wheel_position (.) $+> efw.str1
 	efw.str1 .>
@@ -94,8 +106,8 @@ s" " $value efw.str1
 
 : remove-wheel ( WheelID --)
 \ disconnect the wheel, it becomes unavailable to the application
-    wait-wheel
-	EFWClose drop
+    (wait-wheel) drop
+	EFWClose EFW.?abort
 ;
 
 : scan-wheels ( -- )
@@ -107,12 +119,17 @@ s" " $value efw.str1
 		\ loop over each connected wheel
 		CR ." ID" tab  ." Handle" tab tab ." Wheel" CR
 		0 do
-			i EFWWheelID ( index buffer) EFWGetID  EFW.?abort
+			0 EFWWheelID !
+			i EFWWheelID EFWGetID ?dup if EFW.?abort unloop exit then
 			EFWWheelID @										( ID)
 			dup -> wheel.ID .
-			wheel.ID EFWOpen EFW.?abort
-			wheel.ID EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?ABORT
-			wheel.ID EFWSN EFWGetSerialNumber drop 
+			wheel.ID EFWOpen ?dup if EFW.?abort unloop exit then
+			wheel.ID EFWWheelInfo EFWGetProperty ?dup if
+				EFW.?abort wheel.ID EFWClose EFW.?abort unloop exit
+			then
+			wheel.ID EFWSN EFWGetSerialNumber ?dup if
+				EFW.?abort wheel.ID EFWClose EFW.?abort unloop exit
+			then
 			wheel.ID EFW.make-handle 2dup tab type 	( ID c-addr u)			
 			($constant)											( --)			
 			wheel_name tab type CR	
@@ -155,8 +172,9 @@ END-ENUMS
 ASSIGN default_filterSpec TO-DO filterSpec
 
 : filter ( pos --)
-	->wheel_position
-	wait-wheel
+	(wait-wheel) 0= if drop exit then
+	wheel.ID swap EFWSetPosition ?dup if EFW.?abort exit then
+	(wait-wheel) 0= if exit then
 	wheel_position filterSpec .>
 ;
 
@@ -166,7 +184,7 @@ ASSIGN default_filterSpec TO-DO filterSpec
 
 : check-wheel ( --)
 \ report the current filter wheel state to the user
-	wheel.ID EFWWheelInfo ( ID buffer) EFWGetProperty EFW.?abort
+	wheel.ID EFWWheelInfo EFWGetProperty ?dup if EFW.?abort exit then
 	s" Filter wheel" panel{
 	s" ID" wheel.ID (.) .field
 	s" Name" wheel_name .field
