@@ -40,7 +40,7 @@ s" " $value efw.str1
 \ report whether the wheel is moving
 	0 -> pos
 	wheel.ID ADDR pos EFWGetPosition
-	dup 5 = if drop -1 -1 exit then
+	dup 5 = if EFW.error! -1 -1 exit then
 	?dup if EFW.?abort 0 0 exit then
 	pos -1 = -1 \ An SDK position of -1 also means moving.
 ;

@@ -1,5 +1,11 @@
 # ForthEFW
 
+`efw.error.code` and `.timestamp` retain the latest nonzero SDK result until
+application acknowledgement; success does not clear them. Timestamps are
+ForthBase UTC Unix epoch seconds. `EFW.reopen?` accepts removed (4),
+error-state (6) and closed (10), not invalid values, moving, unsupported
+operations or invalid length (9). Printers never reconnect.
+
 `configure-wheel` selects `wheel.default.slot` (0) and waits for settling.
 Desired defaults are not cached hardware state. Filter names, products and
 focus offsets belong to the observing environment; unnamed slots report numbers.

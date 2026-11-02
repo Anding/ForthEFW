@@ -1,6 +1,7 @@
 \ Forth words directly corresponding to the EFW SDK
 need ForthBase 
 need ForthVT100
+NEED windows
                                             
 LIBRARY: EFW_filter.dll  
 
@@ -32,6 +33,7 @@ BEGIN-ENUMS EFW.Error ( n -- caddr u)
 	 +" FILTER WHEEL ERROR_STATE" 
 	 +" FILTER WHEEL GENERAL_ERROR" 
 	 +" FILTER WHEEL NOT_SUPPORTED" 
+     +" FILTER WHEEL INVALID_LENGTH"
 	 +" FILTER WHEEL CLOSED" 
 END-ENUMS
 
@@ -53,6 +55,25 @@ EFWWheelInfo EFW_WHEEL_INFO erase
 EFWSN EFW_ID erase
 
 \ Report SDK errors; keep the public name for existing callers.
+0 value efw.error.code       \ Latest nonzero SDK result.
+0 value efw.error.timestamp  \ UTC Unix epoch seconds.
+
+: EFW.reopen? ( code -- flag )
+\ SDK v1.8: removed, hardware error state or CLOSED (10, not INVALID_LENGTH 9).
+    dup 4 = over 6 = or swap 10 = or
+;
+
+: EFW.error! ( code -- )
+\ Latch nonzero SDK results, including the normal MOVING wait result.
+    ?dup if
+        -> efw.error.code utc-epoch-seconds -> efw.error.timestamp
+    then
+;
+
 : EFW.?abort ( n --)
-	?dup if EFW.Error cr type cr then
+\ Retain nonzero errors until service acknowledges them; report only.
+	?dup if
+        dup EFW.error!
+        EFW.Error cr type cr
+    then
 ;
