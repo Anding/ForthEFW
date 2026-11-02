@@ -21,6 +21,8 @@
 
 s" " $value efw.str1
 
+0 value wheel.default.slot \ Desired initial slot; names and offsets belong to the rig.
+
 : wheel_name ( -- caddr u)
 \ return the name of the camera
 	EFWWheelInfo EFW_WHEEL_NAME zcount
@@ -145,29 +147,17 @@ s" " $value efw.str1
 DEFER filterBand ( n -- caddr u)
 DEFER filterSpec ( n -- caddr u)
 
-BEGIN-ENUMS default_filterBand
-( n -- caddr u)
-	+" LUM"
-	+" RED"
-	+" GREEN"
-	+" BLUE"
-	+" H-ALPHA"
-	+" SII"
-	+" OIII"
-END-ENUMS
+: default_filterBand ( slot -- caddr u )
+\ Report the numeric slot when the environment has supplied no filter names.
+    (.)
+;
 
 ASSIGN default_filterBand TO-DO filterBand
 	
-BEGIN-ENUMS default_filterSpec
-( n -- caddr u)
-	+" Astronomik UV-IR-BLOCK L-2"
-	+" Astronomik Deep-Sky Red"
-	+" Astronomik Deep-Sky Green"
-	+" Astronomik Deep-Sky Blue"
-	+" Astronomik MaxFR 6nm H-alpha"
-	+" Astronomik MaxFR 6nm SII"
-	+" Astronomik MaxFR 6nm OIII"
-END-ENUMS
+: default_filterSpec ( slot -- caddr u )
+\ Leave product descriptions to the environment.
+    (.)
+;
 
 ASSIGN default_filterSpec TO-DO filterSpec
 
@@ -191,6 +181,11 @@ ASSIGN default_filterSpec TO-DO filterSpec
 	s" Position" wheel_position (.) .field
 	s" Moving" wheel_moving (.) .field
 	}panel
+;
+
+: configure-wheel ( -- )
+\ Select the desired default slot and wait for settling.
+    wheel.default.slot ->wheel_position wait-wheel
 ;
 
 

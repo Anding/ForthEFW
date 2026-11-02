@@ -1,4 +1,8 @@
 # ForthEFW
+
+`configure-wheel` selects `wheel.default.slot` (0) and waits for settling.
+Desired defaults are not cached hardware state. Filter names, products and
+focus offsets belong to the observing environment; unnamed slots report numbers.
 Control of the ZWO electronic filter wheel in Forth
 
 Metadata uses ForthBase's `NEED ordered-maps` string maps.
