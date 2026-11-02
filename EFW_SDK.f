@@ -35,6 +35,7 @@ BEGIN-ENUMS EFW.Error ( n -- caddr u)
 	 +" FILTER WHEEL NOT_SUPPORTED" 
      +" FILTER WHEEL INVALID_LENGTH"
 	 +" FILTER WHEEL CLOSED" 
+	 +" FILTER WHEEL CLOSED (SDK 1.8.4)"
 END-ENUMS
 
 BEGIN-STRUCTURE EFW_WHEEL_INFO
@@ -59,8 +60,8 @@ EFWSN EFW_ID erase
 0 value efw.error.timestamp  \ UTC Unix epoch seconds.
 
 : EFW.reopen? ( code -- flag )
-\ SDK v1.8: removed, hardware error state or CLOSED (10, not INVALID_LENGTH 9).
-    dup 4 = over 6 = or swap 10 = or
+\ Header CLOSED=10; the shipped Win32 1.8.4 DLL returns 11 for a closed handle.
+    dup 4 = over 6 = or over 10 = or swap 11 = or
 ;
 
 : EFW.error! ( code -- )
