@@ -162,10 +162,8 @@ ASSIGN default_filterBand TO-DO filterBand
 ASSIGN default_filterSpec TO-DO filterSpec
 
 : filter ( pos --)
-	(wait-wheel) 0= if drop exit then
-	wheel.ID swap EFWSetPosition ?dup if EFW.?abort exit then
-	(wait-wheel) 0= if exit then
-	wheel_position filterSpec .>
+\ Select a wheel slot and wait for it to settle.
+    ->wheel_position wait-wheel
 ;
 
 : filter? ( --)
@@ -185,7 +183,7 @@ ASSIGN default_filterSpec TO-DO filterSpec
 
 : configure-wheel ( -- )
 \ Select the desired default slot and wait for settling.
-    wheel.default.slot ->wheel_position wait-wheel
+    wheel.default.slot filter
 ;
 
 

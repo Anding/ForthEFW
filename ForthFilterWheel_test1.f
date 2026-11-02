@@ -22,4 +22,5 @@ T{ 123 1 EFW.?abort wheel_position }T 123 0 ==
 T{ 123 2 ->wheel_position test.moves }T 123 0 ==
 0 -> test.position-error
 T{ 123 configure-wheel test.slot test.moves }T 123 0 1 ==
+T{ 123 2 filter test.slot test.moves wheel_moving }T 123 2 2 0 ==
 Tend
